@@ -6,14 +6,16 @@ import module2.validation.UserDTO
 import module3.functional_effects
 import module3.functional_effects.functionalProgram.declarativeEncoding.Console
 
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Random, Success, Try}
 
 object App {
   def main(args: Array[String]): Unit = {
     println(s"Hello from " +
       s"${Thread.currentThread().getName}")
 
-//    val t1 = new Thread{
+    ProbabilityExperiment.run()
+
+    //    val t1 = new Thread{
 //      override def run(): Unit = {
 //        Thread.sleep(1000)
 //        println(s"Hello from " +
@@ -82,8 +84,8 @@ object App {
      // val r: () => Unit = functional_effects.functionalProgram.executableEncoding.greet2.run
 
 
-    functional_effects.functionalProgram.declarativeEncoding.interpret(
-       functional_effects.functionalProgram.declarativeEncoding.p2)
+//    functional_effects.functionalProgram.declarativeEncoding.interpret(
+//       functional_effects.functionalProgram.declarativeEncoding.p2)
 
   }
 }
