@@ -10,7 +10,8 @@ object homework_hkt_impllicts{
       *   val r2 = println(tupleF(list1, list2))
       * 
       */
-    def tupleF[F[_], A, B](fa: F[A], fb: F[B]) = ???
+    def tupleF[F[_], A, B](fa: F[A], fb: F[B])(implicit converter:Converter[F]) =
+        converter(fa).flatMap(a=>converter(fb).map((a,_)))
 
 
     trait Bindable[F[_], A] {
@@ -18,6 +19,34 @@ object homework_hkt_impllicts{
         def flatMap[B](f: A => F[B]): F[B]
     }
 
+  object Bindable {
+
+    implicit def optBindable[A](opt: Option[A]): Bindable[Option, A] = new Bindable[Option, A] {
+      override def map[B](f: A => B): Option[B] = opt.map(f)
+
+      override def flatMap[B](f: A => Option[B]): Option[B] = opt.flatMap(f)
+    }
+
+    implicit def listBindable[F[_], A](list: List[A]): Bindable[List, A] = new Bindable[List, A] {
+      def map[B](f: A => B): List[B] = list.map(f)
+
+      def flatMap[B](f: A => List[B]): List[B] = list.flatMap(f)
+    }
+  }
+
+  trait Converter[F[_]]{
+    def apply[A](v: F[A]): Bindable[F,A]
+  }
+
+  object Converter {
+    implicit def opt[A]:Converter[Option] = new Converter[Option] {
+      override def apply[A](v: Option[A]): Bindable[Option, A] = v
+    }
+
+    implicit def list[A]:Converter[List] = new Converter[List] {
+      override def apply[A](v: List[A]): Bindable[List, A] = v
+    }
+  }
 
   val optA: Option[Int] = Some(1)
   val optB: Option[Int] = Some(2)
